@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+    <!-- 指定 数据库 的 资源 文件  -->
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+            <!-- 这里支持多种寻址方式：classpath和file -->
+            <value>classpath:config.properties</value>
+            <!-- 推荐使用file的方式引入，这样可以将配置和代码分离 -->
+            <value>classpath:hibernateConfig.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!--<context:property-placeholder location="classpath:hibernateConfig.properties" />-->
+
+    <!-- 配置 自动扫描包 -->
+    <context:component-scan base-package="cn.com.java"><!-- base-package 如果多个，用“,”分隔 -->
+    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 配置 数据库 的链接 -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+
+    <!-- config  Hibernate  sessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <!--配置 dataSource 数据源 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 自动扫描注解方式配置的hibernate类文件-->
+        <property name="packagesToScan">
+            <list>
+                <value>cn.com.java.leiquan.lei.enity</value>
+            </list>
+        </property>
+        <!-- 配置 Hibernate 的 参数-->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.connection.autocommit">true</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <!--<prop key="hibernate.current_session_context_class">${hibernate.current_session_context_class}</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+
+    <!-- 配置事务增强处理Bean，指定事务管理器 -->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="test*" propagation="REQUIRED"  isolation="DEFAULT"/>
+            <tx:method name="save*" propagation="REQUIRED"  />
+            <tx:method name="update*" propagation="REQUIRED"  isolation="DEFAULT" />
+            <tx:method name="delete*" propagation="REQUIRED"  isolation="DEFAULT" />
+            <tx:method name="clear*" propagation="REQUIRED"  isolation="DEFAULT" />
+            <tx:method name="change*" propagation="REQUIRED"  isolation="DEFAULT" />
+
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" isolation="DEFAULT" />
+            <tx:method name="find*" propagation="REQUIRED" read-only="true" isolation="DEFAULT" />
+            <tx:method name="select*" propagation="REQUIRED" read-only="true" isolation="DEFAULT" />
+            <tx:method name="load*" propagation="REQUIRED" read-only="true" isolation="DEFAULT" />
+            <tx:method name="count*" propagation="REQUIRED" read-only="true" isolation="DEFAULT" />
+
+            <!--其他采用默认事务方式-->
+            <tx:method name="*" propagation="REQUIRED" />
+
+
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- Aop 配置 -->
+    <aop:config>
+        <aop:advisor advice-ref="transactionAdvice" pointcut="execution(* cn.com.java.core.coreOperations.service.*..*.*(..))"/>
+
+    </aop:config>
+
+
+
+</beans>
