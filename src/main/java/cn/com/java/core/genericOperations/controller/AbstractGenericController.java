@@ -22,6 +22,7 @@ public abstract class AbstractGenericController<T> {
      * @param t
      */
     protected  void  save(T t){
+
         boService.save(t);
     }
 

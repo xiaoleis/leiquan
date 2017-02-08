@@ -11,4 +11,6 @@ public interface CoreDao {
 
     void delete(String uuid, Class T);
 
+    //测试提交
+
 }
