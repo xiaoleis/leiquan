@@ -26,8 +26,17 @@ public class CoreDaoImpl implements CoreDao {
      * @param t
      */
     public void save(final Object t) {
-        getSession().save(t);
 
+        getSession().save(t);
+    }
+
+    /**
+     * 基础update方法
+     * @param t
+     */
+    public void update(final Object t){
+
+        getSession().update(t);
     }
 
     /**
@@ -46,7 +55,11 @@ public class CoreDaoImpl implements CoreDao {
      * @param T
      */
     public void delete(String uuid, Class T) {
-        findOne(uuid,T);
+        Object object =  findOne(uuid,T);
+        if(object != null){
+            getSession().delete(object);
+        }
+
     }
 
 }

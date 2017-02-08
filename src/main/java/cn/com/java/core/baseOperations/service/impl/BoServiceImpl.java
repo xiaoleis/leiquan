@@ -40,4 +40,43 @@ public class BoServiceImpl implements BoService {
         model.setCjr("");
         coreService.save(t);
     }
+
+    /**
+     * 通用update方法
+     * @param t
+     */
+    public final void update(final Object t){
+        Validation.objectIsNull(t);
+        BaseEntity model = (BaseEntity) t;
+        if(findOne(model.getUuid(),null) != null){
+            model.setXgsj(new Date());
+            model.setXgr("");
+            coreService.update(model);
+        }
+    }
+
+
+    /**
+     * 通用查找唯一数据
+     * @param uuid
+     * @param T
+     * @return
+     */
+    public final Object findOne(String uuid,Class T){
+
+        return coreService.findOne(uuid, T);
+    }
+
+
+    /**
+     * 通用删除方法
+     * @param uuid
+     * @param T
+     */
+    public void delete(String uuid, Class T){
+
+         coreService.delete(uuid, T);
+    }
+
+
 }

@@ -15,7 +15,29 @@ public class CoreServiceImpl implements CoreService {
     @Resource
     private CoreDao coreDao;
 
+    public CoreServiceImpl() {
+    }
+
     public void save(final Object t) {
+
         coreDao.save(t);
     }
+
+
+    public Object findOne(String uuid,Class T){
+
+        return coreDao.findOne(uuid, T);
+    }
+
+
+    public void delete(String uuid , Class T){
+
+        coreDao.delete(uuid, T);
+    }
+
+    public void update(final Object t){
+
+        coreDao.update(t);
+    }
+
 }
