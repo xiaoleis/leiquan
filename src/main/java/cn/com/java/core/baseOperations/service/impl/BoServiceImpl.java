@@ -48,11 +48,11 @@ public class BoServiceImpl implements BoService {
     public final void update(final Object t){
         Validation.objectIsNull(t);
         BaseEntity model = (BaseEntity) t;
-        if(findOne(model.getUuid(),null) != null){
+       // if(findOne(model.getUuid(),null) != null){
             model.setXgsj(new Date());
             model.setXgr("");
             coreService.update(model);
-        }
+        //}
     }
 
 

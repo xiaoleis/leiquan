@@ -1,6 +1,7 @@
 package cn.com.java.core.coreOperations.dao.impl;
 
 import cn.com.java.core.coreOperations.dao.CoreDao;
+import cn.com.java.leiquan.lei.enity.test;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,7 @@ public class CoreDaoImpl implements CoreDao {
     private SessionFactory sessionFactory;
 
     protected Session getSession(){
+
         return sessionFactory.getCurrentSession();
     }
 
@@ -35,7 +37,7 @@ public class CoreDaoImpl implements CoreDao {
      * @param t
      */
     public void update(final Object t){
-
+        System.out.print("-0000");
         getSession().update(t);
     }
 
@@ -46,8 +48,9 @@ public class CoreDaoImpl implements CoreDao {
      * @return
      */
     public Object findOne(String uuid, Class T) {
-        return getSession().get(uuid,T);
-    }
+
+        return getSession().get(T,uuid);
+}
 
     /**
      * 根据uuid删除数据

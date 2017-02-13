@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Table(name="test")
 public class test extends BaseEntity implements Serializable{
-    @Id
+
     private String id;
 
     private String remark;
